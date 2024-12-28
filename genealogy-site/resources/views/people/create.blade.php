@@ -4,6 +4,18 @@
 <div class="container">
     <h1>Create a New Person</h1>
 
+    <!-- 当用户输入数据不符合验证规则时，Laravel 会自动将用户重定向回上一页，并附带错误信息。 -->
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
     <form action="{{ route('people.store') }}" method="POST">
         @csrf
         <div class="form-group">

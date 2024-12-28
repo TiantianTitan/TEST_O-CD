@@ -1,0 +1,24 @@
+Installer Laravel
+
+    composer create-project laravel/laravel genealogy-site
+
+Entrez le répertoire du projet
+
+    cd genealogy-site
+
+Démarrer le serveur de développement local
+
+    php artisan serve
+
+Migrer les tables de la base de données
+
+    php artisan migrate
+
+Générer le système d authentification par défaut de Laravel 
+
+    composer require laravel/ui
+    php artisan ui vue --auth
+    npm install
+    npm run dev
+    php artisan migrate
+

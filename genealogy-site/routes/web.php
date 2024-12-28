@@ -27,3 +27,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/people/{id}', [PersonController::class, 'show'])->name('people.show');
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
