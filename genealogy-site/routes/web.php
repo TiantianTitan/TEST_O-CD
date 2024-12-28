@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\PersonController;
+use Illuminate\Support\Facades\DB;
+use App\Models\Person;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,7 +21,7 @@ Route::get('/', function () {
 });
 
 
-use App\Http\Controllers\PersonController;
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/people', [PersonController::class, 'index'])->name('people.index');
@@ -34,4 +37,22 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+
+Route::get('/test-degree', function () {
+    DB::enableQueryLog(); // 启用查询日志
+    $timestart = microtime(true); // 记录开始时间
+
+    $person = Person::findOrFail(84); // 测试的起点
+    $degree = $person->getDegreeWith(1265); // 测试目标点
+
+    // 输出结果
+    return response()->json([
+        'degree' => $degree,
+        'time' => microtime(true) - $timestart, // 计算时间
+        'nb_queries' => count(DB::getQueryLog()), // 查询次数
+    ]);
+});
+

@@ -4,19 +4,17 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Person;
+use App\Models\Relationship;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // 生成 100 个人物数据
+        Person::factory()->count(100)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // 生成 200 条关系数据
+        Relationship::factory()->count(200)->create();
     }
 }
