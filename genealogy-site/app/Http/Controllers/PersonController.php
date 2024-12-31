@@ -89,5 +89,83 @@ class PersonController extends Controller
 
 
 
+    // public function proposeModification(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'type' => 'required|in:update_person,add_relationship',
+    //         'content' => 'required|array',
+    //     ]);
+
+    //     $modification = Modification::create([
+    //         'target_id' => $id,
+    //         'proposed_by' => auth()->id(),
+    //         'type' => $request->type,
+    //         'content' => json_encode($request->content),
+    //     ]);
+
+    //     return redirect()->back()->with('success', 'Modification proposal submitted successfully!');
+    // }
+
+    public function update(Request $request, $id)
+    {
+        $person = Person::findOrFail($id);
+    
+        // 验证输入数据
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'birth_name' => 'nullable|string|max:255',
+            'date_of_birth' => 'nullable|date',
+            'parents' => 'nullable|array',
+            'children' => 'nullable|array',
+        ]);
+    
+        // 更新基本信息
+        $person->update([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'birth_name' => $validated['birth_name'],
+            'date_of_birth' => $validated['date_of_birth'],
+        ]);
+    
+        // 更新父母关系
+        if (isset($validated['parents'])) {
+            $person->parents()->delete(); // 清除旧的父母关系
+            foreach ($validated['parents'] as $parentName) {
+                $parent = Person::where('first_name', explode(' ', $parentName)[0])
+                                ->where('last_name', explode(' ', $parentName)[1])
+                                ->first();
+                if ($parent) {
+                    $person->parents()->create([
+                        'parent_id' => $parent->id,
+                        'created_by' => auth()->id(), // 添加 created_by 字段
+                    ]);
+                }
+            }
+        }
+        
+    
+        // 更新子女关系
+        if (isset($validated['children'])) {
+            $person->children()->delete(); // 清除旧的子女关系
+            foreach ($validated['children'] as $childName) {
+                $child = Person::where('first_name', explode(' ', $childName)[0])
+                                ->where('last_name', explode(' ', $childName)[1])
+                                ->first();
+                if ($child) {
+                    $person->children()->create([
+                        'child_id' => $child->id,
+                        'created_by' => auth()->id(), // 添加 created_by 字段
+                    ]);
+                }
+            }
+        }
+        
+    
+        return redirect()->route('people.show', $person->id)->with('success', 'Person updated successfully!');
+    }
+    
+
+
 
 }
